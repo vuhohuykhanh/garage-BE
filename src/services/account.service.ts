@@ -23,7 +23,6 @@ class AccountService {
     const account = await AppDataSource.getRepository(Account).findOne({
       where: {
         username,
-        password,
       },
     });
     if (!account) {
@@ -32,8 +31,18 @@ class AccountService {
         message: 'Account not found',
       });
     }
+    const validPassword = account.comparePassword(password);
+    if (!validPassword) {
+      return error({
+        res,
+        message: 'Wrong password',
+      });
+    }
 
-    return res.send(200, { accessToken: account.generateJWT() });
+    return success({
+      res,
+      message: { accessToken: account.generateJWT() },
+    });
   }
 
   // sign up
@@ -99,7 +108,7 @@ class AccountService {
     //create account relate user
     const account = new Account();
     account.username = username;
-    account.password = account.setPassword(password);
+    account.password = account.createPassword(password);
     account.purchaseCount = 0;
     account.user = user;
     account.role = role;
@@ -122,45 +131,45 @@ class AccountService {
     const { username, idCardNumber, newPassword } = req.body;
     const accountRepo = await AppDataSource.getRepository(Account);
     const userRepo = await AppDataSource.getRepository(User);
-    
-		const user = await userRepo.findOne({
-			where: {
-				idCardNumber,
-			}
-		})
-		const account = await accountRepo.findOne({
+
+    const user = await userRepo.findOne({
+      where: {
+        idCardNumber,
+      },
+    });
+    const account = await accountRepo.findOne({
       where: {
         username: username,
       },
-			relations: ['user']
+      relations: ['user'],
     });
-		
-		if(!user){
-			return error({
+
+    if (!user) {
+      return error({
         res,
         message: 'This user not exist',
       });
-		}
-		if(!account){
-			return error({
+    }
+    if (!account) {
+      return error({
         res,
         message: 'This account not exist',
       });
-		}
-		if(account.user.id !== user.id){
-			return error({
+    }
+    if (account.user.id !== user.id) {
+      return error({
         res,
         message: 'This account and this user is not match',
       });
-		}
+    }
 
-		account.password = account.setPassword(newPassword);
-		await accountRepo.save(account);
-		
-		return success({
-			res,
-			message: account
-		})
+    account.password = account.createPassword(newPassword);
+    await accountRepo.save(account);
+
+    return success({
+      res,
+      message: account,
+    });
   }
 }
 

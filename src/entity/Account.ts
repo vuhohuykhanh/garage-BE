@@ -47,12 +47,11 @@ export class Account {
 		return bcrypt.compareSync(password, this.password)
 	}
 
-	setPassword = (password: string) => {
+	createPassword = (password: string) => {
 		return (this.password = bcrypt.hashSync(password, 10))
 	}
 
 	generateJWT = () => {
-		console.log(this.username, this.password)
 		return jwt.sign({
 			username: this.username,
 			password: this.password,

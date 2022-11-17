@@ -1,8 +1,10 @@
 import moment = require('moment');
 import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { User } from '../entity';
+import { Account, User } from '../entity';
 import { success, error, isEmptyObject } from '../util';
+
+var jwt = require('jsonwebtoken');
 
 class UserService {
   // get all user
@@ -10,6 +12,44 @@ class UserService {
     const result = await AppDataSource.getRepository(User).find();
     return res.send(result);
   }
+
+	//get user information
+	async getUserInfo(req, res){
+		if(!req.headers.authorization){
+			return error({
+        res,
+        message: 'Please fill authorization',
+      });
+		}
+		const authorization = req.headers.authorization.split(' ')[1];
+		const decoded = jwt.verify(authorization, "GarageLink");
+		const userRepo = await AppDataSource.getRepository(User);
+		const user = await userRepo.findOne({
+			relations: ["account"],
+			where: {
+				account: {
+					username: decoded?.username
+				}
+			}
+		})
+		res.send(user);
+	}
+
+		// get all account role user
+		async getAllUser(_, res){
+			const account = await AppDataSource.getRepository(Account).find({
+				relations: ["role", "user"],
+				where: {
+					role: {
+						roleName: "User",
+					}
+				}
+			})
+			return success({
+				res,
+				message: account,
+			})
+		}
 
   //create user
   async create(req, res) {
@@ -49,6 +89,49 @@ class UserService {
       message: 'Update user success',
     });
   }
+
+  //update password
+  async updatePassword(req, res) {
+		if (isEmptyObject(req.body)) {
+      return error({
+        res,
+        message: 'Empty data',
+      });
+    }
+		const {idCardNumber, password, newPassword} = req.body;
+
+		const accountRepo = await AppDataSource.getRepository(Account);
+		const account = await accountRepo.findOne({
+			relations: ["user"],
+			where: {
+				user: {
+					idCardNumber: idCardNumber
+				}
+			}
+		});
+
+		if(!account){
+			return error({
+        res,
+        message: 'Account not found with this idCardNumber',
+      });
+		}
+
+		const validPassword = account.comparePassword(password);
+		if(!validPassword){
+			return error({
+        res,
+        message: 'Wrong Old password',
+      });
+		}
+		
+		account.password = account.createPassword(newPassword);
+		accountRepo.save(account);
+		return success({
+			res,
+			message: 'Change password success'
+		})
+	}
 
   //delete user
   async delete(req, res) {
