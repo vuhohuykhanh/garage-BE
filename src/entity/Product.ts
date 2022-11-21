@@ -24,13 +24,13 @@ export class Product {
   @Column()
   name: string;
 
-  @Column({ type: 'bytea' })
+  @Column({ type: 'bytea', nullable: true })
   image: Uint8Array;
 
-  @Column()
+  @Column({default: () => "0"})
   quantity: number;
 
-  @Column()
+  @Column({default: () => "0"})
   price: string;
 
   @ManyToOne(() => ProductType, (productType) => productType.products)
