@@ -1,3 +1,5 @@
+import moment = require('moment');
+import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
@@ -5,24 +7,189 @@ import { error, isEmptyObject, success } from '../util';
 class ProductService {
   // get all
   async getAll(_, res) {
-    const result = await AppDataSource.getRepository(Product).find();
+    const result = await AppDataSource.getRepository(Product).find({
+      where: { deleteAt: IsNull() },
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+    });
     return res.send(result);
   }
 
   //get product by manufacturer
-  async getProductsByManufacturer(req, res) {}
+  async getProductsByManufacturer(req, res) {
+    const { manufacturerId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+      where: {
+        manufacturer: {
+          id: manufacturerId,
+        },
+				deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+  }
 
   //get product by product type
-  async getProductsByProductType(req, res) {}
+  async getProductsByProductType(req, res) {
+		const { productTypeId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+      where: {
+        productType: {
+          id: productTypeId,
+        },
+				deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+	}
 
   //get product by accessory type
-  async getProductsByAccessoryType(req, res) {}
+  async getProductsByAccessoryType(req, res) {
+		const { accessoryTypeId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+      where: {
+        accessoryType: {
+          id: accessoryTypeId,
+        },
+				deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+	}
 
   //get product by service type
-  async getProductsByServiceType(req, res) {}
+  async getProductsByServiceType(req, res) {
+		const { serviceTypeId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+      where: {
+        serviceType: {
+          id: serviceTypeId,
+        },
+				deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+	}
 
   //get product by product id
-  async getProductById(req, res) {}
+  async getProductById(req, res) {
+		const { productId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+      where: {
+				id: productId,
+				deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+	}
 
   //create
   async create(req, res) {
@@ -32,25 +199,84 @@ class ProductService {
         message: 'Please fill data',
       });
     } else {
-      const { name, image, quantity, price } = req.body;
-			const productRepo = await AppDataSource.getRepository(Product);
-			const result = await productRepo.save(
-				await productRepo.create({
-					...req.body,
-				})
-			)
-			return success({
-				res,
-				message: result
-			})
+      const productRepo = await AppDataSource.getRepository(Product);
+      const result = await productRepo.save(
+        await productRepo.create({
+          ...req.body,
+        })
+      );
+      return success({
+        res,
+        message: result,
+      });
     }
   }
 
   //update
-  async update(req, res) {}
+  async update(req, res) {
+		if(isEmptyObject(req.body)) return error({
+			res,
+			message: "Please fill data",
+		})
+		const {id} = req.query;		
+		const dataUpdate = req.body;
+
+		const productRepo = await AppDataSource.getRepository(Product);
+		const product = await productRepo.findOne({
+			where: {
+				id: id,
+			},
+			relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+      ],
+		})
+		
+		if(!product) return error({
+			res,
+			message: "Product not found",
+		})
+
+		const newProduct = await productRepo.save({
+			...product,
+			...dataUpdate,
+		})
+
+		return success({
+			res,
+			message: newProduct,
+		})
+	}
 
   //delete
-  async delete(req, res) {}
+  async delete(req, res) {
+    const product = await AppDataSource.getRepository(Product).findOne({
+      where: { id: req.params.id },
+    });
+
+    if (!product) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+
+    await AppDataSource.getRepository(Product).save({
+      ...product,
+      deleteAt: moment().format(),
+    });
+
+    return success({
+      res,
+      message: 'Delete product success',
+    });
+  }
 }
 
 export default new ProductService();

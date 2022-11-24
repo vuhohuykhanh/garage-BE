@@ -4,6 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+	JoinColumn,
 } from 'typeorm';
 import {
   AccessoryType,
@@ -33,46 +34,55 @@ export class Product {
   @Column({default: () => "0"})
   price: string;
 
+	@Column('timestamp without time zone', {name: 'detele_at', nullable: true})
+	deleteAt: Date | null;
+
   @ManyToOne(() => ProductType, (productType) => productType.products)
   productType: ProductType;
 
   @ManyToOne(() => Manufacturer, (manufacturer) => manufacturer.products, {
     nullable: true,
   })
-  manufacturer: string;
+  manufacturer: Manufacturer;
 
-  @ManyToOne(() => AccessoryType, (accessory) => accessory.products, {
+  @ManyToOne(() => AccessoryType, (accessoryType) => accessoryType.products, {
     nullable: true,
   })
-  accessoryType: string;
+  accessoryType: AccessoryType;
 
-  @ManyToOne(() => ServiceType, (accessory) => accessory.products, {
+  @ManyToOne(() => ServiceType, (serviceType) => serviceType.products, {
     nullable: true,
   })
-  serviceType: string;
+  serviceType: ServiceType;
 
   //Sale description
   @OneToMany(
     () => SaleDescription,
-    (saleDescription) => saleDescription.product
+    (saleDescription) => saleDescription.product, {
+			nullable: true,
+		}
   )
   saleDescriptions: SaleDescription[];
 
   // Cart Description
   @OneToMany(
     () => CartDescription,
-    (cartDescription) => cartDescription.product
+    (cartDescription) => cartDescription.product, {
+			nullable: true
+		}
   )
   cartDescriptions: CartDescription[];
 
   //Product Description
   @OneToMany(
     () => ProductDescription,
-    (productDescription) => productDescription.product
+    (productDescription) => productDescription.product, {
+			nullable: true,
+		}
   )
   productDescriptions: ProductDescription[];
 
   // Comment
-  @OneToMany(() => Comment, (comment) => comment.product)
+  @OneToMany(() => Comment, (comment) => comment.product, {nullable: true})
   comments: Comment[];
 }

@@ -9,6 +9,6 @@ export class AccessoryType {
   @Column()
   name: string;
 
-	@OneToMany(() => Product, (product) => product.productType)
+  @OneToMany(() => Product, (product) => product.productType)
   products: Product[];
 }

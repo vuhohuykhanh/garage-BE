@@ -1,4 +1,4 @@
-import { Entity, Column, JoinColumn, PrimaryColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, JoinColumn, PrimaryColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product, Sale } from './index';
 
 

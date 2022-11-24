@@ -7,5 +7,6 @@ const router = Router();
 router.get('/get-all', commentService.getAll);
 
 //POST
+router.post('/create', commentService.create);
 
 export default router;

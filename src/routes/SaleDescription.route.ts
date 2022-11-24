@@ -7,5 +7,6 @@ const router = Router();
 router.get('/get-all', saleDescriptionService.getAll);
 
 //POST
+router.post('/create', saleDescriptionService.create);
 
 export default router;

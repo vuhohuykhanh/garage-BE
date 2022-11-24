@@ -15,8 +15,8 @@ router.get('/get-product-by-id', productService.getProductById); //get all produ
 router.post('/create', productService.create); // create Product
 
 //PATCH
-router.patch('/update', productService.update); //update product
+router.patch('/update/:id', productService.update); //update product
 
 //Delete
-router.delete('/product/:id', productService.delete) //delete product
+router.delete('/delete/:id', productService.delete) //delete product
 export default router;
