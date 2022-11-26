@@ -15,9 +15,9 @@ export class CartType {
   @Column()
   name: string;
 
-  @OneToMany(
-    () => CartDescription,
-    (cartDescription) => cartDescription.cartType
-  )
-  cartDescriptions: CartDescription[];
+  //@OneToMany(
+  //  () => CartDescription,
+  //  (cartDescription) => cartDescription.cartType
+  //)
+  //cartDescriptions: CartDescription[];
 }

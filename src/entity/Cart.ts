@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { User, Status, CartDescription } from './index';
 
 @Entity()
@@ -6,32 +13,34 @@ export class Cart {
   @PrimaryGeneratedColumn()
   id: number;
 
-	@Column({type: 'timestamp'})
-  createTime: Date;
+  @Column({
+    type: 'timestamp without time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createTime: string;
 
-	@Column({type: 'timestamp'})
-	totalPrice: Date;
+  @Column({default: () => "0" })
+  totalPrice: number;
 
-	@Column({type: 'timestamp', nullable: true})
-	timeToDone: Date;
+  @Column({ type: 'timestamp without time zone', nullable: true })
+  timeToDone: string | null;
 
-	// many to one
-	@ManyToOne(() => Status, (status) => status.carts)
-	status: Status;
+  // many to one
+  @ManyToOne(() => Status, (status) => status.carts)
+  status: Status;
 
-	// many to one
-	@ManyToOne(() => User, (user) => user.carts)
-	customer: User;
+  // many to one
+  @ManyToOne(() => User, (user) => user.carts)
+  customer: User;
 
-	// many to one
-	//@ManyToOne(() => User, (user) => user.carts)
-	//approvalEmployee: User;
+  @Column('timestamp without time zone', { name: 'delete_at', nullable: true })
+  deleteAt: string | null;
 
-		// Cart Description
+  // many to one
+  @ManyToOne(() => User, (user) => user.carts, {nullable: true})
+  approvalEmployee: User | null;
 
-	@OneToMany(
-		() => CartDescription,
-		(cartDescription) => cartDescription.cart
-	)
-	cartDescriptions: CartDescription[];
+  // Cart Description
+  @OneToMany(() => CartDescription, (cartDescription) => cartDescription.cart, {nullable: true })
+  cartDescriptions: CartDescription[] | null;
 }

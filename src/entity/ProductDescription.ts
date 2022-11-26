@@ -1,16 +1,19 @@
-import { Entity, PrimaryColumn, JoinColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, JoinColumn, Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product, DescriptionType } from './index';
 
 @Entity()
 export class ProductDescription {
-  @PrimaryColumn()
+	@PrimaryGeneratedColumn()
+	productDesId: number
+
+  @Column()
   productId: number;
 
   @ManyToOne(() => Product, (product) => product.productDescriptions)
   @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @PrimaryColumn()
+  @Column()
   descriptionTypeId: number;
 
   @ManyToOne(() => DescriptionType, (descriptionType) => descriptionType.productDescriptions)

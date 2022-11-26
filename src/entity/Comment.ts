@@ -1,16 +1,19 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
 import { Account, Product } from './index';
 
 @Entity()
 export class Comment {
-  @PrimaryColumn()
+	@PrimaryGeneratedColumn()
+	commentId: number;
+
+  @Column()
   accountId: number;
 
   @ManyToOne(() => Account, (account) => account.comments)
   @JoinColumn({ name: 'accountId' })
   account: Account;
 
-  @PrimaryColumn()
+  @Column()
   productId: number;
 
   @ManyToOne(() => Product, (product) => product.comments)
@@ -20,6 +23,6 @@ export class Comment {
   @Column()
   content: string;
 
-  @Column({ type: 'timestamp' })
-  time: Date;
+  @Column({ type: 'timestamp without time zone', default: () => 'CURRENT_TIMESTAMP' })
+  time: string | null;
 }

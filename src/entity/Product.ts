@@ -4,7 +4,7 @@ import {
   Column,
   ManyToOne,
   OneToMany,
-	JoinColumn,
+  JoinColumn,
 } from 'typeorm';
 import {
   AccessoryType,
@@ -28,14 +28,14 @@ export class Product {
   @Column({ type: 'bytea', nullable: true })
   image: Uint8Array;
 
-  @Column({default: () => "0"})
+  @Column({ default: () => '0' })
   quantity: number;
 
-  @Column({default: () => "0"})
+  @Column({ default: () => '0' })
   price: string;
 
-	@Column('timestamp without time zone', {name: 'detele_at', nullable: true})
-	deleteAt: Date | null;
+  @Column('timestamp without time zone', { name: 'delete_at', nullable: true })
+  deleteAt: string | null;
 
   @ManyToOne(() => ProductType, (productType) => productType.products)
   productType: ProductType;
@@ -43,46 +43,49 @@ export class Product {
   @ManyToOne(() => Manufacturer, (manufacturer) => manufacturer.products, {
     nullable: true,
   })
-  manufacturer: Manufacturer;
+  manufacturer: Manufacturer | null;
 
   @ManyToOne(() => AccessoryType, (accessoryType) => accessoryType.products, {
     nullable: true,
   })
-  accessoryType: AccessoryType;
+  accessoryType: AccessoryType | null;
 
   @ManyToOne(() => ServiceType, (serviceType) => serviceType.products, {
     nullable: true,
   })
-  serviceType: ServiceType;
+  serviceType: ServiceType | null;
 
   //Sale description
   @OneToMany(
     () => SaleDescription,
-    (saleDescription) => saleDescription.product, {
-			nullable: true,
-		}
+    (saleDescription) => saleDescription.product,
+    {
+      nullable: true,
+    }
   )
-  saleDescriptions: SaleDescription[];
+  saleDescriptions: SaleDescription[] | null;
 
   // Cart Description
   @OneToMany(
     () => CartDescription,
-    (cartDescription) => cartDescription.product, {
-			nullable: true
-		}
+    (cartDescription) => cartDescription.product,
+    {
+      nullable: true,
+    }
   )
-  cartDescriptions: CartDescription[];
+  cartDescriptions: CartDescription[] | null;
 
   //Product Description
   @OneToMany(
     () => ProductDescription,
-    (productDescription) => productDescription.product, {
-			nullable: true,
-		}
+    (productDescription) => productDescription.product,
+    {
+      nullable: true,
+    }
   )
-  productDescriptions: ProductDescription[];
+  productDescriptions: ProductDescription[] | null;
 
   // Comment
-  @OneToMany(() => Comment, (comment) => comment.product, {nullable: true})
-  comments: Comment[];
+  @OneToMany(() => Comment, (comment) => comment.product, { nullable: true })
+  comments: Comment[] | null;
 }

@@ -15,7 +15,7 @@ class StatusService {
       const repo = await AppDataSource.getRepository(Status);
       const acc = new Status();
       acc.name = req.body.statusName;
-      repo.save(acc);
+      await repo.save(acc);
       success({
         res,
         message: 'Create success',

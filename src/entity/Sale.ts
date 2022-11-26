@@ -6,11 +6,11 @@ export class Sale {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp' })
-  startTime: Date;
+  @Column({ type: 'timestamp without time zone' })
+  startTime: string;
 
-  @Column({ type: 'timestamp' })
-  endTime: Date;
+  @Column({ type: 'timestamp without time zone' })
+  endTime: string;
 
   @Column()
   description: string;

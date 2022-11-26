@@ -1,28 +1,36 @@
-import { Entity, PrimaryColumn, Column, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryColumn,
+  Column,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Cart, CartType, Product } from './index';
 
 @Entity()
 export class CartDescription {
-  @PrimaryColumn()
-  cartId: number;
+  @PrimaryGeneratedColumn()
+  cartDesId: number;
 
   @ManyToOne(() => Cart, (cart) => cart.cartDescriptions)
-  @JoinColumn({ name: 'cartId' })
   cart: Cart;
 
-  @Column()
-  productId: number;
-
   @ManyToOne(() => Product, (product) => product.cartDescriptions)
-  @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @Column()
+  @Column({ default: () => '0' })
   quantity: number;
 
-  @Column({ type: 'timestamp' })
-  usageTime: Date;
+  @Column({
+    type: 'timestamp without time zone',
+    nullable: true,
+  })
+  usageTime: string | null;
 
-  @ManyToOne(() => CartType, (cartType) => cartType.cartDescriptions)
-  cartType: CartType;
+  @Column('timestamp without time zone', { name: 'delete_at', nullable: true })
+  deleteAt: string | null;
+
+  //@ManyToOne(() => CartType, (cartType) => cartType.cartDescriptions)
+  //cartType: CartType;
 }

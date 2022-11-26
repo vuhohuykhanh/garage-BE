@@ -13,7 +13,7 @@ class DescriptionTypeService {
     if (isEmptyObject(req.body)) {
       return error({
         res,
-        message: 'Please fill data',
+        message: 'Please fill body data',
       });
     } else {
       const descriptionTypeRepo = await AppDataSource.getRepository(
