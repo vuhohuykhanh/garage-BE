@@ -16,6 +16,7 @@ import descriptionTypeService from './description-type.service';
 import saleDescriptionService from './sale-description.service';
 import productDescriptionService from './product-description.service';
 import manufacturerService from './manufacturer.service';
+import mailService from './mail.service';
 
 export {
   roleService,
@@ -36,4 +37,5 @@ export {
   saleDescriptionService,
   productDescriptionService,
   manufacturerService,
+	mailService,
 };

@@ -219,7 +219,7 @@ class ProductService {
         res,
         message: 'Please fill body data',
       });
-    const { id } = req.query;
+    const { id } = req.params;
     const dataUpdate = req.body;
 
     const productRepo = await AppDataSource.getRepository(Product);

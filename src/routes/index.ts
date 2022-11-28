@@ -16,6 +16,7 @@ import descriptionType from './descriptionType.route'
 import saleDescription from './saleDescription.route'
 import productDescription from './productDescription.route'
 import manufacturer from './manufacturer.route'
+import mail from './mail.route'
 
 const router = (app) => {
 	//app.use('/api/bill', bill);
@@ -30,6 +31,7 @@ const router = (app) => {
 	app.use('/api/cart-type', cartType);
 	app.use('/api/product-type', productType);
 	app.use('/api/service-type', serviceType);
+	app.use('/api/mail', mail);
 	app.use('/api/manufacturer', manufacturer);
 	app.use('/api/accessory-type', accessoryType);
 	app.use('/api/sale-description', saleDescription);

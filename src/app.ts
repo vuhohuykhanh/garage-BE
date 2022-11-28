@@ -1,6 +1,7 @@
 import * as express from 'express';
 import router from './routes';
 import { AppDataSource } from './data-source';
+const cors = require('cors');
 
 
 AppDataSource.initialize()
@@ -12,6 +13,7 @@ AppDataSource.initialize()
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 router(app);
 
 app.listen(5000, () => 'App listening port 5000!');
