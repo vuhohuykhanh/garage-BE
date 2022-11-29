@@ -19,7 +19,7 @@ export class Cart {
   })
   createTime: string;
 
-  @Column({default: () => "0" })
+  @Column({ default: () => '0' })
   totalPrice: number;
 
   @Column({ type: 'timestamp without time zone', nullable: true })
@@ -37,10 +37,12 @@ export class Cart {
   deleteAt: string | null;
 
   // many to one
-  @ManyToOne(() => User, (user) => user.carts, {nullable: true})
+  @ManyToOne(() => User, (user) => user.carts, { nullable: true })
   approvalEmployee: User | null;
 
   // Cart Description
-  @OneToMany(() => CartDescription, (cartDescription) => cartDescription.cart, {nullable: true })
+  @OneToMany(() => CartDescription, (cartDescription) => cartDescription.cart, {
+    nullable: true,
+  })
   cartDescriptions: CartDescription[] | null;
 }

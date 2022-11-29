@@ -33,12 +33,12 @@ class CartService {
 
   //get-cart-by-id
   async getCartByUserId(req, res) {
-    const { id } = req.query;
+    const { idCardNumber } = req.query;
     const result = await AppDataSource.getRepository(Cart).find({
       relations: ['status', 'customer', 'approvalEmployee', 'cartDescriptions'],
       where: {
         customer: {
-          id: id,
+          idCardNumber: idCardNumber,
         },
       },
     });
@@ -154,6 +154,28 @@ class CartService {
         message: 'Cart not found',
       });
 
+    await AppDataSource.getRepository(Cart).remove(cart);
+
+    return success({
+      res,
+      message: 'Delete cart success',
+    });
+  }
+
+  async deleteSoft(req, res) {
+    const cart = await AppDataSource.getRepository(Cart).findOne({
+      where: {
+        id: req.params.id,
+        deleteAt: IsNull(),
+      },
+    });
+
+    if (!cart)
+      return error({
+        res,
+        message: 'Cart not found',
+      });
+
     await AppDataSource.getRepository(Cart).save({
       ...cart,
       deleteAt: moment().format(),
@@ -161,7 +183,7 @@ class CartService {
 
     return success({
       res,
-      message: 'Delete cart success',
+      message: 'Delete soft cart success',
     });
   }
 }

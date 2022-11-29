@@ -13,7 +13,9 @@ export class CartDescription {
   @PrimaryGeneratedColumn()
   cartDesId: number;
 
-  @ManyToOne(() => Cart, (cart) => cart.cartDescriptions)
+  @ManyToOne(() => Cart, (cart) => cart.cartDescriptions, {
+    onDelete: 'CASCADE',
+  })
   cart: Cart;
 
   @ManyToOne(() => Product, (product) => product.cartDescriptions)
@@ -21,6 +23,9 @@ export class CartDescription {
 
   @Column({ default: () => '0' })
   quantity: number;
+
+  @Column({ default: () => '0' })
+  price: number;
 
   @Column({
     type: 'timestamp without time zone',

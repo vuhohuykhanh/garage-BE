@@ -25,16 +25,18 @@ class CartDescriptionService {
 
     const cart = await AppDataSource.getRepository(Cart).save({
       ...dataCart,
+			status: 1
     });
 
     const cartDes = await AppDataSource.createQueryBuilder()
       .insert()
       .into(CartDescription)
       .values(
-        listProducts.map((item) => ({
+        listProducts?.map((item) => ({
 					cart,
 					product: item,
 					quantity: item.quantity,
+					price: item.price,
 					usageTime: item.usageTime || new Date(),
 				})),
       )
@@ -52,7 +54,7 @@ class CartDescriptionService {
       relations: ['cart', 'product'],
       where: {
         cart: {
-          id: req.params.cartId,
+          id: req.query.cartId,
         },
       },
     });

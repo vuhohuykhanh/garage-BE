@@ -17,5 +17,6 @@ router.patch('/update-status/:id', cartService.updateStatus);
 
 //DELETE
 router.delete('/delete/:id', cartService.delete);
+router.delete('/delete-soft/:id', cartService.deleteSoft);
 
 export default router;
