@@ -117,7 +117,7 @@ class AccountService {
 
     return success({
       res,
-      message: account,
+      message: "Create account success",
     });
   }
 

@@ -1,6 +1,9 @@
 import { Router } from 'express';
 import { userService } from '../services';
 
+const multer  = require('multer');
+const upload = multer({ dest: 'uploads/' })
+
 const router = Router();
 
 //GET
@@ -13,6 +16,7 @@ router.get('/get-all-user', userService.getAllUser) // get all account role user
 router.post('/create', userService.create)
 
 //PATCH - Update
+router.post('/upload-avatar', upload.single('avatar'), userService.uploadAvatar)
 router.patch('/update', userService.update)
 router.patch('/update-password', userService.updatePassword)
 
