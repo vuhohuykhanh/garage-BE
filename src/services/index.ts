@@ -17,6 +17,7 @@ import saleDescriptionService from './sale-description.service';
 import productDescriptionService from './product-description.service';
 import manufacturerService from './manufacturer.service';
 import mailService from './mail.service';
+import imageUpload from './image-upload.service';
 
 export {
   roleService,
@@ -38,4 +39,5 @@ export {
   productDescriptionService,
   manufacturerService,
 	mailService,
+	imageUpload,
 };

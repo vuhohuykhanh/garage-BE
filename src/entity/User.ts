@@ -5,8 +5,9 @@ import {
   OneToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+	JoinColumn,
 } from 'typeorm';
-import { Account, Cart } from './index';
+import { Account, Cart, ImageUpload } from './index';
 
 @Entity()
 export class User {
@@ -25,8 +26,12 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   dob: Date | null;
 
-  @Column({ type: 'bytea', nullable: true })
-  avatar: Uint8Array | null;
+  //@Column({ type: 'bytea', nullable: true })
+  //avatar: Uint8Array | null;
+
+	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.user, {nullable: true})
+	@JoinColumn()
+  avatar: ImageUpload | null;
 
   @Column({ nullable: true })
   email: string | null;

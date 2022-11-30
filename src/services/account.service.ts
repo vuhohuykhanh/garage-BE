@@ -60,7 +60,7 @@ class AccountService {
       idCardNumber,
       name,
       address,
-      avatar,
+      //avatar,
       email,
       phoneNumber,
     } = req.body;
@@ -97,7 +97,7 @@ class AccountService {
     const user = userRepo.create({
       name,
       address,
-      avatar,
+      //avatar,
       email,
       phoneNumber,
       idCardNumber: idCardNumber,

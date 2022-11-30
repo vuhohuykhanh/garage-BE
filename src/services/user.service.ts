@@ -1,7 +1,8 @@
 import moment = require('moment');
+import path = require('path');
 import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Account, User } from '../entity';
+import { Account, ImageUpload, User } from '../entity';
 import { success, error, isEmptyObject } from '../util';
 
 var jwt = require('jsonwebtoken');
@@ -9,7 +10,9 @@ var jwt = require('jsonwebtoken');
 class UserService {
   // get all user
   async getAll(_, res) {
-    const result = await AppDataSource.getRepository(User).find();
+    const result = await AppDataSource.getRepository(User).find({
+			relations: ['avatar']
+		});
     return res.send(result);
   }
 
@@ -25,7 +28,7 @@ class UserService {
     const decoded = jwt.verify(authorization, 'GarageLink');
     const userRepo = await AppDataSource.getRepository(User);
     const user = await userRepo.findOne({
-      relations: ['account'],
+      relations: ['account', 'avatar'],
       where: {
         account: {
           username: decoded?.username,
@@ -70,25 +73,35 @@ class UserService {
 
   //update
   async uploadAvatar(req, res) {
-		const {idCardNumber} = req.body;
-		const user = await AppDataSource.getRepository(User).findOne({
-			where: {
-				idCardNumber: idCardNumber,
-				deleteAt: IsNull()
-			}
+    const { idCardNumber } = req.body;
+    const user = await AppDataSource.getRepository(User).findOne({
+      where: {
+        idCardNumber: idCardNumber,
+        deleteAt: IsNull(),
+      },
+    });
+
+    const { filename, mimetype, size } = req.file;
+    const filepath = req.file.path;
+
+    const imageRepo = await AppDataSource.getRepository(ImageUpload);
+    const image = await imageRepo.save({
+      filename,
+      filepath,
+      mimetype,
+      size,
+    });
+
+		await AppDataSource.getRepository(User).save({
+			...user,
+			avatar: image
 		})
-		console.log(req.file)
-		//res.send(req.file.toString("hex"))
-		//await AppDataSource.getRepository(User).save({
-    //  ...user,
-    //  avatar: ("``x" + req.file.toString("hex")) as any
-    //});
-		
-		//return success({
-    //  res,
-    //  message: 'Update avatar success',
-    //});
-	}
+
+    return success({
+      res,
+      message: 'Upload avatar to database success',
+    });
+  }
 
   async update(req, res) {
     const { idCardNumber: id, ...updateInfo } = req.body;

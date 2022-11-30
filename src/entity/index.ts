@@ -16,6 +16,7 @@ import { SaleDescription } from './SaleDescription';
 import { ServiceType } from './ServiceType';
 import { Status } from './Status';
 import { User } from './User';
+import { ImageUpload } from './ImageUpload';
 
 export {
   AccessoryType,
@@ -36,4 +37,5 @@ export {
   ServiceType,
   Status,
   User,
+	ImageUpload
 };

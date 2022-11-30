@@ -18,6 +18,7 @@ import {
   SaleDescription,
   ServiceType,
   Status,
+	ImageUpload
 } from './entity';
 
 export const AppDataSource = new DataSource({
@@ -47,6 +48,7 @@ export const AppDataSource = new DataSource({
     ServiceType,
     Status,
     User,
+		ImageUpload,
   ],
   migrations: [],
   subscribers: [],

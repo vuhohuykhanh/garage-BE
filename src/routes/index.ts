@@ -17,10 +17,12 @@ import saleDescription from './saleDescription.route'
 import productDescription from './productDescription.route'
 import manufacturer from './manufacturer.route'
 import mail from './mail.route'
+import image from './imageUpload.route'
 
 const router = (app) => {
 	//app.use('/api/bill', bill);
 	app.use('/api/cart', cart);
+	app.use('/api/image', image);
 	app.use('/api/sale', sale);
 	app.use('/api/role', role);
 	app.use('/api/user', user);
