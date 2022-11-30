@@ -2,7 +2,7 @@ import { request } from 'express';
 import moment = require('moment');
 import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Cart } from '../entity';
+import { Cart, CartDescription, Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class CartService {
@@ -148,11 +148,37 @@ class CartService {
       },
     });
 
+    const cartDescription = await AppDataSource.getRepository(
+      CartDescription
+    ).find({
+      relations: ['cart', 'product'],
+      where: {
+        cart: {
+          id: req.params.id,
+          deleteAt: IsNull(),
+        },
+      },
+    });
+
     if (!cart)
       return error({
         res,
         message: 'Cart not found',
       });
+
+    const listProduct = cartDescription?.map((value) => {
+      return {
+        productId: value.product.id,
+        buyQuantity: value.quantity,
+      };
+    });
+
+    const productRepo = await AppDataSource.getRepository(Product);
+    listProduct?.map(async (value) => {
+      await productRepo.update(value?.productId, {
+        quantity: () => `quantity + ${value?.buyQuantity}`,
+      });
+    });
 
     await AppDataSource.getRepository(Cart).remove(cart);
 

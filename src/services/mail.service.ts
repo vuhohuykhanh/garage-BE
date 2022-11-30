@@ -13,7 +13,6 @@ class MailService {
             pass: 'ejamlgxyklxdmdsf', // generated ethereal password
         },
     });
-    console.log(service);
 
     // send mail with defined transport object
     await transporter.sendMail(

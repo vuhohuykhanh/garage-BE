@@ -28,7 +28,7 @@ class CartDescriptionService {
 			status: 1
     });
 
-    const cartDes = await AppDataSource.createQueryBuilder()
+    await AppDataSource.createQueryBuilder()
       .insert()
       .into(CartDescription)
       .values(
@@ -42,10 +42,17 @@ class CartDescriptionService {
       )
       .execute();
 
-    return success({
-      res,
-      message: 'Create success',
-    });
+		const productRepo = await AppDataSource.getRepository(Product);
+		
+		listProducts?.map(async (value) => {
+			await productRepo.update(value?.id, 
+				{quantity: () => `quantity - ${value?.quantity}`})
+		})
+
+		return success({
+			res,
+			message: "Create success"
+		})
   }
 
   //getCartDescriptionByCartId

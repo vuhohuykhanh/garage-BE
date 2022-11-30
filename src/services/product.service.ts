@@ -109,6 +109,9 @@ class ProductService {
         accessoryType: {
           id: accessoryTypeId,
         },
+        productType: {
+          name: 'Phụ kiện',
+        },
         deleteAt: IsNull(),
       },
     });
@@ -142,6 +145,9 @@ class ProductService {
       where: {
         serviceType: {
           id: serviceTypeId,
+        },
+        productType: {
+          name: 'Dịch vụ',
         },
         deleteAt: IsNull(),
       },
