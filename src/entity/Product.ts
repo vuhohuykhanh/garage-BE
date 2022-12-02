@@ -5,11 +5,13 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+	OneToOne,
 } from 'typeorm';
 import {
   AccessoryType,
   CartDescription,
   Comment,
+  ImageUpload,
   Manufacturer,
   ProductDescription,
   ProductType,
@@ -25,8 +27,9 @@ export class Product {
   @Column()
   name: string;
 
-  @Column({ type: 'bytea', nullable: true })
-  image: Uint8Array;
+	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.product, {nullable: true})
+	@JoinColumn()
+  image: ImageUpload | null;
 
   @Column({ default: () => '0' })
   quantity: number;

@@ -10,6 +10,18 @@ class AccountService {
     return res.send(result);
   }
 
+	async getAllUser(_, res) {
+    const result = await AppDataSource.getRepository(Account).find({
+      relations: ['user', 'role'],
+			where: {
+				role: {
+					roleName: "User"
+				}
+			}
+    });
+    return res.send(result);
+  }
+
   //sign in
   async signIn(req, res) {
     if (isEmptyObject(req.body)) {
@@ -25,6 +37,46 @@ class AccountService {
         username,
       },
     });
+    if (!account) {
+      return error({
+        res,
+        message: 'Account not found',
+      });
+    }
+    const validPassword = account.comparePassword(password);
+    if (!validPassword) {
+      return error({
+        res,
+        message: 'Wrong password',
+      });
+    }
+
+    return success({
+      res,
+      message: { accessToken: account.generateJWT() },
+    });
+  }
+
+	//sign in with role admin
+  async signInAdmin(req, res) {
+    if (isEmptyObject(req.body)) {
+      return error({
+        res,
+        message: 'Empty data',
+      });
+    }
+
+    const { username, password } = req.body;
+    const account = await AppDataSource.getRepository(Account).findOne({
+			relations: ['role'],
+      where: {
+        username,
+				role: {
+					roleName: 'Employee'
+				}
+      },
+    });
+
     if (!account) {
       return error({
         res,
@@ -168,7 +220,7 @@ class AccountService {
 
     return success({
       res,
-      message: account,
+      message: "Đổi mật khẩu thành công",
     });
   }
 }
