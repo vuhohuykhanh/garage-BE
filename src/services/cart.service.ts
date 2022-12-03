@@ -1,6 +1,6 @@
 import { request } from 'express';
 import moment = require('moment');
-import { IsNull } from 'typeorm';
+import { IsNull, Not } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { Cart, CartDescription, Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
@@ -13,6 +13,26 @@ class CartService {
       where: {
         deleteAt: IsNull(),
       },
+			order: {
+				id: "ASC"
+			}
+    });
+    return success({
+      res,
+      message: result,
+    });
+  }
+
+	//get-bill (delete at not null)
+	async getBill(_, res) {
+    const result = await AppDataSource.getRepository(Cart).find({
+      relations: ['status', 'customer', 'approvalEmployee', 'cartDescriptions'],
+      where: {
+        deleteAt: Not(IsNull()),
+      },
+			order: {
+				id: "ASC"
+			}
     });
     return success({
       res,
@@ -70,7 +90,8 @@ class CartService {
 
     return success({
       res,
-      message: result,
+      //message: result,
+      message: "Create cart success",
     });
   }
 
@@ -103,7 +124,8 @@ class CartService {
 
     return success({
       res,
-      message: cartUpdate,
+      //message: cartUpdate,
+			message: "Update cart success",
     });
   }
 
@@ -117,7 +139,7 @@ class CartService {
 
     const cart = await AppDataSource.getRepository(Cart).findOne({
       where: {
-        id: req.params.id,
+        id: req.body.cartId,
         deleteAt: IsNull(),
       },
     });
@@ -135,7 +157,7 @@ class CartService {
 
     return success({
       res,
-      message: cartUpdateStatus,
+			message: "Update status success"
     });
   }
 

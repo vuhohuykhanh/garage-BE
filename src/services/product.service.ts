@@ -71,6 +71,9 @@ class ProductService {
         'productDescriptions',
         'comments',
       ],
+			order: {
+				id: "ASC"
+			},
       where: {
         productType: {
           id: productTypeId,
@@ -213,7 +216,8 @@ class ProductService {
       );
       return success({
         res,
-        message: result,
+        //message: result,
+        message: 'Create product success',
       });
     }
   }
@@ -259,7 +263,8 @@ class ProductService {
 
     return success({
       res,
-      message: newProduct,
+      //message: newProduct,
+      message: "Update product success",
     });
   }
 

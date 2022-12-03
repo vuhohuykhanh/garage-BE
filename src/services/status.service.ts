@@ -4,7 +4,11 @@ import { error, success } from '../util';
 
 class StatusService {
   async getAll(_, res) {
-    const result = await AppDataSource.getRepository(Status).find();
+    const result = await AppDataSource.getRepository(Status).find({
+			order: {
+				id: "ASC",
+			}
+		});
     return res.send(result);
   }
 
