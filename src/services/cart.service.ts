@@ -2,7 +2,7 @@ import { request } from 'express';
 import moment = require('moment');
 import { IsNull, Not } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Cart, CartDescription, Product } from '../entity';
+import { Account, Cart, CartDescription, Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class CartService {
@@ -13,9 +13,9 @@ class CartService {
       where: {
         deleteAt: IsNull(),
       },
-			order: {
-				id: "ASC"
-			}
+      order: {
+        id: 'ASC',
+      },
     });
     return success({
       res,
@@ -23,16 +23,16 @@ class CartService {
     });
   }
 
-	//get-bill (delete at not null)
-	async getBill(_, res) {
+  //get-bill (delete at not null)
+  async getBill(_, res) {
     const result = await AppDataSource.getRepository(Cart).find({
       relations: ['status', 'customer', 'approvalEmployee', 'cartDescriptions'],
       where: {
         deleteAt: Not(IsNull()),
       },
-			order: {
-				id: "ASC"
-			}
+      order: {
+        id: 'ASC',
+      },
     });
     return success({
       res,
@@ -91,7 +91,7 @@ class CartService {
     return success({
       res,
       //message: result,
-      message: "Create cart success",
+      message: 'Create cart success',
     });
   }
 
@@ -125,7 +125,7 @@ class CartService {
     return success({
       res,
       //message: cartUpdate,
-			message: "Update cart success",
+      message: 'Update cart success',
     });
   }
 
@@ -150,14 +150,14 @@ class CartService {
         message: 'Cart not found',
       });
 
-    const cartUpdateStatus = await AppDataSource.getRepository(Cart).save({
+    await AppDataSource.getRepository(Cart).save({
       ...cart,
       status: req.body.statusId,
     });
 
     return success({
       res,
-			message: "Update status success"
+      message: 'Update status success',
     });
   }
 
@@ -165,7 +165,7 @@ class CartService {
   async delete(req, res) {
     const cart = await AppDataSource.getRepository(Cart).findOne({
       where: {
-        id: req.params.id,
+        id: req.query.cartId,
         deleteAt: IsNull(),
       },
     });
@@ -176,7 +176,7 @@ class CartService {
       relations: ['cart', 'product'],
       where: {
         cart: {
-          id: req.params.id,
+          id: req.query.cartId,
           deleteAt: IsNull(),
         },
       },
@@ -201,6 +201,17 @@ class CartService {
         quantity: () => `quantity + ${value?.buyQuantity}`,
       });
     });
+
+    await AppDataSource.getRepository(Account).update(
+      {
+        user: {
+          id: req.query.idUser,
+        },
+      },
+      {
+        purchaseCount: () => 'purchaseCount - 1',
+      }
+    );
 
     await AppDataSource.getRepository(Cart).remove(cart);
 

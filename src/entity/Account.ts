@@ -24,15 +24,12 @@ export class Account {
   @Column()
   password: string;
 
-  @Column()
+  @Column({name: "purchasecount", default: () => "0"})
   purchaseCount: number;
 
   // account - role
   @ManyToOne(() => Role, (role) => role.accounts)
   role: Role;
-
-	//@Column()
-	//userId: string;
 
   // account - user
   @OneToOne(() => User, (user) => user.account, {cascade: true})

@@ -27,6 +27,9 @@ export class CartDescription {
   @Column({ default: () => '0' })
   price: number;
 
+	@Column({nullable: true})
+  type: string;
+
   @Column({
     type: 'timestamp without time zone',
     nullable: true,

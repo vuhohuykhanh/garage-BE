@@ -11,8 +11,8 @@ class UserService {
   // get all user
   async getAll(_, res) {
     const result = await AppDataSource.getRepository(User).find({
-			relations: ['avatar']
-		});
+      relations: ['avatar'],
+    });
     return res.send(result);
   }
 
@@ -41,13 +41,14 @@ class UserService {
   // get all account role user
   async getAllUser(_, res) {
     const account = await AppDataSource.getRepository(Account).find({
-      relations: ['role', 'user'],
+      relations: ['role', 'user', 'user.carts'],
       where: {
         role: {
           roleName: 'User',
         },
       },
     });
+
     return success({
       res,
       message: account,
@@ -81,6 +82,7 @@ class UserService {
       },
     });
 
+
     const { filename, mimetype, size } = req.file;
     const filepath = req.file.path;
 
@@ -92,10 +94,10 @@ class UserService {
       size,
     });
 
-		await AppDataSource.getRepository(User).save({
-			...user,
-			avatar: image
-		})
+    await AppDataSource.getRepository(User).save({
+      ...user,
+      avatar: image,
+    });
 
     return success({
       res,

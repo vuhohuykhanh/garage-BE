@@ -1,6 +1,25 @@
 import { Router } from 'express';
 import { productService } from '../services';
 
+const multer  = require('multer');
+const imageUpload = multer({
+	storage: multer.diskStorage(
+			{
+					destination: function (req, file, cb) {
+							cb(null, 'uploads/');
+					},
+					filename: function (req, file, cb) {
+							cb(
+									null,
+									new Date().valueOf() + 
+									'_' +
+									file.originalname
+							);
+					}
+			}
+	), 
+});
+
 const router = Router();
 
 //GET
@@ -12,7 +31,7 @@ router.get('/get-products-by-service-type', productService.getProductsByServiceT
 router.get('/get-product-by-id', productService.getProductById); //get all products
 
 //POST
-router.post('/create', productService.create); // create Product
+router.post('/create', imageUpload.single('image'), productService.create); // create Product
 
 //PATCH
 router.patch('/update/:id', productService.update); //update product

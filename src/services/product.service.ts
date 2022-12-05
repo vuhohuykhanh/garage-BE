@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Product } from '../entity';
+import { ImageUpload, Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class ProductService {
@@ -18,6 +18,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
     });
     return res.send(result);
@@ -36,6 +37,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
       where: {
         manufacturer: {
@@ -70,10 +72,11 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
-			order: {
-				id: "ASC"
-			},
+      order: {
+        id: 'ASC',
+      },
       where: {
         productType: {
           id: productTypeId,
@@ -107,6 +110,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
       where: {
         accessoryType: {
@@ -144,6 +148,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
       where: {
         serviceType: {
@@ -181,6 +186,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
       where: {
         id: productId,
@@ -202,24 +208,27 @@ class ProductService {
 
   //create
   async create(req, res) {
-    if (isEmptyObject(req.body)) {
-      return error({
-        res,
-        message: 'Please fill body data',
-      });
-    } else {
-      const productRepo = await AppDataSource.getRepository(Product);
-      const result = await productRepo.save(
-        await productRepo.create({
-          ...req.body,
-        })
-      );
-      return success({
-        res,
-        //message: result,
-        message: 'Create product success',
-      });
-    }
+    const { filename, mimetype, size } = req.file;
+    const filepath = req.file.path;
+
+    const imageRepo = await AppDataSource.getRepository(ImageUpload);
+    const image = await imageRepo.save({
+      filename,
+      filepath,
+      mimetype,
+      size,
+    });
+
+    const { ...dataProduct } = req.body;
+    await AppDataSource.getRepository(Product).save({
+      ...dataProduct,
+      image: image,
+    });
+
+    return success({
+      res,
+      message: 'Create product success',
+    });
   }
 
   //update
@@ -247,6 +256,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
+				'image',
       ],
     });
 
@@ -264,7 +274,7 @@ class ProductService {
     return success({
       res,
       //message: newProduct,
-      message: "Update product success",
+      message: 'Update product success',
     });
   }
 

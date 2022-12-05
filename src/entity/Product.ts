@@ -27,10 +27,6 @@ export class Product {
   @Column()
   name: string;
 
-	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.product, {nullable: true})
-	@JoinColumn()
-  image: ImageUpload | null;
-
   @Column({ default: () => '0' })
   quantity: number;
 
@@ -39,6 +35,10 @@ export class Product {
 
   @Column('timestamp without time zone', { name: 'delete_at', nullable: true })
   deleteAt: string | null;
+
+	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.product, {nullable: true})
+	@JoinColumn()
+  image: ImageUpload | null;
 
   @ManyToOne(() => ProductType, (productType) => productType.products)
   productType: ProductType;

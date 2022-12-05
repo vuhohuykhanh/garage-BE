@@ -1,7 +1,14 @@
 import moment = require('moment');
 import { IsNull } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Cart, CartDescription, Product, Status, User } from '../entity';
+import {
+  Account,
+  Cart,
+  CartDescription,
+  Product,
+  Status,
+  User,
+} from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class CartDescriptionService {
@@ -21,11 +28,12 @@ class CartDescriptionService {
         message: 'Please fill body data',
       });
 
-    const { product: listProducts, ...dataCart } = req.body;
+    const { product: listProducts, customer, ...dataCart } = req.body;
 
     const cart = await AppDataSource.getRepository(Cart).save({
       ...dataCart,
-			status: 1
+      customer: customer,
+      status: 1,
     });
 
     await AppDataSource.createQueryBuilder()
@@ -33,26 +41,32 @@ class CartDescriptionService {
       .into(CartDescription)
       .values(
         listProducts?.map((item) => ({
-					cart,
-					product: item,
-					quantity: item.quantity,
-					price: item.price,
-					usageTime: item.usageTime || new Date(),
-				})),
+          cart,
+          product: item,
+          quantity: item.quantity,
+          price: item.price,
+          usageTime: item.usageTime || new Date(),
+          type: 'Mua bán',
+        }))
       )
       .execute();
 
-		const productRepo = await AppDataSource.getRepository(Product);
-		
-		listProducts?.map(async (value) => {
-			await productRepo.update(value?.id, 
-				{quantity: () => `quantity - ${value?.quantity}`})
-		})
+    const productRepo = await AppDataSource.getRepository(Product);
 
-		return success({
-			res,
-			message: "Create success"
-		})
+    listProducts?.map(async (value) => {
+      await productRepo.update(value?.id, {
+        quantity: () => `quantity - ${value?.quantity}`,
+      });
+    });
+
+    await AppDataSource.getRepository(Account).update(customer, {
+      purchaseCount: () => 'purchaseCount + 1',
+    });
+
+    return success({
+      res,
+      message: 'Create success',
+    });
   }
 
   //getCartDescriptionByCartId
@@ -74,15 +88,103 @@ class CartDescriptionService {
 
   //addCartDescription
   async addCartDescription(req, res) {
-    res.send('Đang làm');
+    const { idCartDes, productAdd } = req.body;
+
+    await AppDataSource.createQueryBuilder()
+      .insert()
+      .into(CartDescription)
+      .values(
+        productAdd?.map((item) => ({
+          cart: idCartDes,
+          product: item,
+          quantity: item.quantity,
+          price: item.price,
+          type: item?.type || '',
+          usageTime: item.usageTime || new Date(),
+        }))
+      )
+      .execute();
+
+    const productRepo = await AppDataSource.getRepository(Product);
+
+    productAdd?.map(async (value) => {
+      await productRepo.update(value?.id, {
+        quantity: () => `quantity - ${value?.quantity}`,
+      });
+    });
+
+    return success({
+      res,
+      message: 'Add into cart success',
+    });
   }
 
   //confirm cart description
   async confirmCartDescription(req, res) {
-    res.send('Đang làm');
+    const { id, newPrice } = req.body;
+
+    const cartRepo = await AppDataSource.getRepository(Cart);
+
+    await AppDataSource.createQueryBuilder()
+      .update(CartDescription)
+      .set({ type: 'Mua bán' })
+      .where({
+        cart: {
+          id: id,
+        },
+      })
+      .execute();
+
+    await cartRepo.update({ id: id }, { totalPrice: newPrice });
+
+    return success({
+      res,
+      message: 'Confirm cart description success',
+    });
   }
 
-  //delete cart des
+  // delete product additional in cartDescription
+  async deleteCartDescription(req, res) {
+    const { id } = req.params;
+
+    const cartDescriptionRepo = await AppDataSource.getRepository(
+      CartDescription
+    );
+
+    const listCartDescription = await cartDescriptionRepo.find({
+      relations: ['product'],
+      where: {
+        cart: {
+          id: id,
+        },
+        type: 'Báo giá',
+      },
+    });
+
+    // get list product from list product add
+    const listProductAdd = listCartDescription?.map((value) => ({
+      productId: value?.product?.id,
+      buyQuantity: value?.quantity,
+    }));
+
+    // add lại số lượng product khi hủy
+    const productRepo = await AppDataSource.getRepository(Product);
+    listProductAdd?.map(async (value) => {
+      await productRepo.update(value?.productId, {
+        quantity: () => `quantity + ${value?.buyQuantity}`,
+      });
+    });
+
+    // xóa những đơn trong description
+    await cartDescriptionRepo.remove(listCartDescription);
+
+    return success({
+      res,
+      message: 'Delete cart description success',
+    });
+  }
+
+  //delete cart desc
   async delete(req, res) {
     const cartDes = await AppDataSource.getRepository(CartDescription).findOne({
       where: {

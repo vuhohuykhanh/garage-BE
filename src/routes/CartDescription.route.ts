@@ -15,5 +15,6 @@ router.patch('/add', cartDescriptionService.addCartDescription)
 router.patch('/confirm', cartDescriptionService.confirmCartDescription)
 
 //DETELE
-router.delete('/delete/:id', cartDescriptionService.delete)
+//router.delete('/delete/:id', cartDescriptionService.delete)
+router.delete('/delete/:id', cartDescriptionService.deleteCartDescription)
 export default router;
