@@ -25,7 +25,7 @@ class SaleService {
     );
     return success({
       res,
-      message: sale,
+      message: 'Create sale success',
     });
   }
 }

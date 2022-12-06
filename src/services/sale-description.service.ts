@@ -11,6 +11,18 @@ class SaleDescriptionService {
     return res.send(result);
   }
 
+	async getSaleDesById(req, res) {
+		const result = await AppDataSource.getRepository(SaleDescription).find({
+      relations: ['product', 'sale'],
+			where: {
+				sale: {
+					id: req?.query?.id
+				}
+			}
+    });
+    return res.send(result);
+	}
+
   //create
   async create(req, res) {
     if (isEmptyObject(req.body))
@@ -46,7 +58,7 @@ class SaleDescriptionService {
     await saleDesRepo.save(saleDes);
     return success({
       res,
-      message: saleDes,
+      message: 'Create sale description success',
     });
   }
 }
