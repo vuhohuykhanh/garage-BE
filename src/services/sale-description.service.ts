@@ -58,7 +58,7 @@ class SaleDescriptionService {
     await saleDesRepo.save(saleDes);
     return success({
       res,
-      message: 'Create sale description success',
+      message: 'Tạo đợt khuyến mãi cho sản phẩm thành công',
     });
   }
 }

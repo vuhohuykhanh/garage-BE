@@ -61,6 +61,9 @@ class CartService {
           idCardNumber: idCardNumber,
         },
       },
+			order: {
+				id: "DESC"
+			}
     });
 
     if (!result)

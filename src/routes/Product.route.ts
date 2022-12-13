@@ -28,6 +28,7 @@ router.get('/get-products-by-manufacturer', productService.getProductsByManufact
 router.get('/get-products-by-product-type', productService.getProductsByProductType); //get all products by product type
 router.get('/get-products-by-accessory-type', productService.getProductsByAccessoryType); //get all products by accessory type
 router.get('/get-products-by-service-type', productService.getProductsByServiceType); //get all products by service type
+router.get('/get-products-by-manufacturer-and-accessory', productService.getProductsByManufacturerAndAccessory); //get all products by manufacturer and accessory
 router.get('/get-product-by-id', productService.getProductById); //get all products
 
 //POST

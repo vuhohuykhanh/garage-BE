@@ -25,7 +25,7 @@ class SaleService {
     );
     return success({
       res,
-      message: 'Create sale success',
+      message: 'Thêm đợt khuyến mãi thành công',
     });
   }
 }

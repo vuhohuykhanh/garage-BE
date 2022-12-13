@@ -32,6 +32,24 @@ class ImageUploadService {
 
 		return res.sendFile(fullfilepath)
   }
+
+	async uploadImage(req, res) {
+    const { filename, mimetype, size } = req.file;
+    const filepath = req.file.path;
+
+    const imageRepo = await AppDataSource.getRepository(ImageUpload);
+    await imageRepo.save({
+      filename,
+      filepath,
+      mimetype,
+      size
+    });
+
+    return success({
+      res,
+      message: 'Upload image to database success',
+    });
+  }
 }
 
 export default new ImageUploadService();

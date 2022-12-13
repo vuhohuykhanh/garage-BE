@@ -1,5 +1,5 @@
 import moment = require('moment');
-import { IsNull } from 'typeorm';
+import { IsNull, MoreThan } from 'typeorm';
 import { AppDataSource } from '../data-source';
 import { ImageUpload, Product } from '../entity';
 import { error, isEmptyObject, success } from '../util';
@@ -18,7 +18,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
     });
     return res.send(result);
@@ -37,7 +37,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
       where: {
         manufacturer: {
@@ -72,7 +72,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
       order: {
         id: 'ASC',
@@ -107,10 +107,11 @@ class ProductService {
         'accessoryType',
         'serviceType',
         'saleDescriptions',
+        'saleDescriptions.sale',
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
       where: {
         accessoryType: {
@@ -119,6 +120,11 @@ class ProductService {
         productType: {
           name: 'Phụ kiện',
         },
+				//saleDescriptions: {
+				//	sale: {
+				//		endTime: MoreThan((new Date()).toLocaleDateString())
+				//	}
+				//},
         deleteAt: IsNull(),
       },
     });
@@ -145,10 +151,11 @@ class ProductService {
         'accessoryType',
         'serviceType',
         'saleDescriptions',
+        'saleDescriptions.sale',
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
       where: {
         serviceType: {
@@ -157,6 +164,58 @@ class ProductService {
         productType: {
           name: 'Dịch vụ',
         },
+				//saleDescriptions: {
+				//	sale: {
+				//		endTime: MoreThan((new Date()).toLocaleDateString())
+				//	}
+				//},
+        deleteAt: IsNull(),
+      },
+    });
+
+    if (!result) {
+      return error({
+        res,
+        message: 'Product not found',
+      });
+    }
+    return success({
+      res,
+      message: result,
+    });
+  }
+
+	//get all products by manufacturer and accessory
+  async getProductsByManufacturerAndAccessory(req, res) {
+    const { manufacturerId, accessoryId } = req.query;
+    const result = await AppDataSource.getRepository(Product).find({
+      relations: [
+        'productType',
+        'manufacturer',
+        'accessoryType',
+        'serviceType',
+        'saleDescriptions',
+        'saleDescriptions.sale',
+        'cartDescriptions',
+        'productDescriptions',
+        'comments',
+        'image',
+      ],
+      where: {
+        manufacturer: {
+          id: manufacturerId,
+        },
+				accessoryType: {
+          id: accessoryId,
+        },
+        productType: {
+          name: 'Phụ kiện',
+        },
+				//saleDescriptions: {
+				//	sale: {
+				//		endTime: MoreThan((new Date()).toLocaleDateString())
+				//	}
+				//},
         deleteAt: IsNull(),
       },
     });
@@ -186,7 +245,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
       where: {
         id: productId,
@@ -256,7 +315,7 @@ class ProductService {
         'cartDescriptions',
         'productDescriptions',
         'comments',
-				'image',
+        'image',
       ],
     });
 
