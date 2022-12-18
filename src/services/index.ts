@@ -12,7 +12,7 @@ import accessoryTypeService from './accessory-type.service';
 import productTypeService from './product-type.service';
 import serviceTypeService from './service-type.service';
 import cartDescriptionService from './cart-description.service';
-import descriptionTypeService from './description-type.service';
+//import descriptionTypeService from './description-type.service';
 import saleDescriptionService from './sale-description.service';
 import productDescriptionService from './product-description.service';
 import manufacturerService from './manufacturer.service';
@@ -34,7 +34,7 @@ export {
   productTypeService,
   serviceTypeService,
   cartDescriptionService,
-  descriptionTypeService,
+  //descriptionTypeService,
   saleDescriptionService,
   productDescriptionService,
   manufacturerService,

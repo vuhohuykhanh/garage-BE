@@ -1,5 +1,6 @@
 import { AppDataSource } from '../data-source';
-import { DescriptionType, Product, ProductDescription } from '../entity';
+//import { DescriptionType, Product, ProductDescription } from '../entity';
+import { Product, ProductDescription } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class ProductDescriptionService {
@@ -25,7 +26,7 @@ class ProductDescriptionService {
     return res.send(result);
   }
 
-  //create
+  // create
   async create(req, res) {
     if (isEmptyObject(req.body))
       return error({
@@ -33,7 +34,7 @@ class ProductDescriptionService {
         message: 'Please fill body data',
       });
 
-    const { productId, descriptionTypeId, content } = req.body;
+    const { productId, content } = req.body;
 
     const product = await AppDataSource.getRepository(Product).findOne({
       where: { id: productId },
@@ -44,21 +45,12 @@ class ProductDescriptionService {
         message: 'Product not found',
       });
 
-    const desType = await AppDataSource.getRepository(DescriptionType).findOne({
-      where: { id: descriptionTypeId },
-    });
-    if (!desType)
-      return error({
-        res,
-        message: 'Description Type not found',
-      });
-
     const productDesRepo = await AppDataSource.getRepository(
       ProductDescription
     );
     const productDes = new ProductDescription();
     productDes.product = product;
-    productDes.descriptionType = desType;
+    //productDes.descriptionType = desType;
     productDes.content = content;
     await productDesRepo.save(productDes);
     return success({

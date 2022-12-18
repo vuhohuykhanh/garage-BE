@@ -5,7 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
-	OneToOne,
+  OneToOne,
 } from 'typeorm';
 import {
   AccessoryType,
@@ -36,8 +36,10 @@ export class Product {
   @Column('timestamp without time zone', { name: 'delete_at', nullable: true })
   deleteAt: string | null;
 
-	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.product, {nullable: true})
-	@JoinColumn()
+  @OneToOne(() => ImageUpload, (imageUpload) => imageUpload.product, {
+    nullable: true,
+  })
+  @JoinColumn()
   image: ImageUpload | null;
 
   @ManyToOne(() => ProductType, (productType) => productType.products)

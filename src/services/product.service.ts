@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IsNull, MoreThan } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { ImageUpload, Product } from '../entity';
+import { ImageUpload, Product, ProductDescription } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class ProductService {
@@ -278,11 +278,17 @@ class ProductService {
       size,
     });
 
-    const { ...dataProduct } = req.body;
-    await AppDataSource.getRepository(Product).save({
+    const { description, ...dataProduct } = req.body;
+    const product = await AppDataSource.getRepository(Product).save({
       ...dataProduct,
       image: image,
     });
+
+    const descriptionRepo = await AppDataSource.getRepository(ProductDescription);
+		await descriptionRepo.save({
+			content: description,
+			product: product,
+		})
 
     return success({
       res,

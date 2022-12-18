@@ -5,7 +5,7 @@ import { Cart } from './Cart';
 import { CartDescription } from './CartDescription';
 import { CartType } from './CartType';
 import { Comment } from './Comment';
-import { DescriptionType } from './DescriptionType';
+//import { DescriptionType } from './DescriptionType';
 import { Manufacturer } from './Manufacturer';
 import { Product } from './Product';
 import { ProductDescription } from './ProductDescription';
@@ -26,7 +26,7 @@ export {
   CartDescription,
   CartType,
   Comment,
-  DescriptionType,
+  //DescriptionType,
   Manufacturer,
   Product,
   ProductDescription,
