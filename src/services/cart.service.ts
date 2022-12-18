@@ -14,7 +14,7 @@ class CartService {
         deleteAt: IsNull(),
       },
       order: {
-        id: 'ASC',
+        id: 'DESC',
       },
     });
     return success({
@@ -31,7 +31,7 @@ class CartService {
         deleteAt: Not(IsNull()),
       },
       order: {
-        id: 'ASC',
+        id: 'DESC',
       },
     });
     return success({

@@ -5,7 +5,11 @@ import { error, isEmptyObject, success } from '../util';
 class SaleService {
   // get all sale
   async getAll(_, res) {
-    const result = await AppDataSource.getRepository(Sale).find();
+    const result = await AppDataSource.getRepository(Sale).find({
+			order: {
+				id: "DESC"
+			}
+		});
     return res.send(result);
   }
 

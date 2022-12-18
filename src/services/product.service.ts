@@ -20,6 +20,11 @@ class ProductService {
         'comments',
         'image',
       ],
+      order: {
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
+      },
     });
     return res.send(result);
   }
@@ -44,6 +49,11 @@ class ProductService {
           id: manufacturerId,
         },
         deleteAt: IsNull(),
+      },
+      order: {
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
       },
     });
 
@@ -76,6 +86,9 @@ class ProductService {
       ],
       order: {
         id: 'ASC',
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
       },
       where: {
         productType: {
@@ -120,12 +133,17 @@ class ProductService {
         productType: {
           name: 'Phụ kiện',
         },
-				//saleDescriptions: {
-				//	sale: {
-				//		endTime: MoreThan((new Date()).toLocaleDateString())
-				//	}
-				//},
+        //saleDescriptions: {
+        //	sale: {
+        //		endTime: MoreThan((new Date()).toLocaleDateString())
+        //	}
+        //},
         deleteAt: IsNull(),
+      },
+      order: {
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
       },
     });
 
@@ -164,12 +182,17 @@ class ProductService {
         productType: {
           name: 'Dịch vụ',
         },
-				//saleDescriptions: {
-				//	sale: {
-				//		endTime: MoreThan((new Date()).toLocaleDateString())
-				//	}
-				//},
+        //saleDescriptions: {
+        //	sale: {
+        //		endTime: MoreThan((new Date()).toLocaleDateString())
+        //	}
+        //},
         deleteAt: IsNull(),
+      },
+      order: {
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
       },
     });
 
@@ -185,7 +208,7 @@ class ProductService {
     });
   }
 
-	//get all products by manufacturer and accessory
+  //get all products by manufacturer and accessory
   async getProductsByManufacturerAndAccessory(req, res) {
     const { manufacturerId, accessoryId } = req.query;
     const result = await AppDataSource.getRepository(Product).find({
@@ -205,18 +228,23 @@ class ProductService {
         manufacturer: {
           id: manufacturerId,
         },
-				accessoryType: {
+        accessoryType: {
           id: accessoryId,
         },
         productType: {
           name: 'Phụ kiện',
         },
-				//saleDescriptions: {
-				//	sale: {
-				//		endTime: MoreThan((new Date()).toLocaleDateString())
-				//	}
-				//},
+        //saleDescriptions: {
+        //	sale: {
+        //		endTime: MoreThan((new Date()).toLocaleDateString())
+        //	}
+        //},
         deleteAt: IsNull(),
+      },
+      order: {
+        saleDescriptions: {
+          saleId: 'ASC',
+        },
       },
     });
 
@@ -284,11 +312,13 @@ class ProductService {
       image: image,
     });
 
-    const descriptionRepo = await AppDataSource.getRepository(ProductDescription);
-		await descriptionRepo.save({
-			content: description,
-			product: product,
-		})
+    const descriptionRepo = await AppDataSource.getRepository(
+      ProductDescription
+    );
+    await descriptionRepo.save({
+      content: description,
+      product: product,
+    });
 
     return success({
       res,

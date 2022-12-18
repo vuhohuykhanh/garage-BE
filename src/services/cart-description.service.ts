@@ -72,7 +72,7 @@ class CartDescriptionService {
   //getCartDescriptionByCartId
   async getCartDescriptionByCartId(req, res) {
     const result = await AppDataSource.getRepository(CartDescription).find({
-      relations: ['cart', 'product'],
+      relations: ['cart', 'product', 'product.saleDescriptions'],
       where: {
         cart: {
           id: req.query.cartId,
