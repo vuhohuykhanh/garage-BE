@@ -2,7 +2,7 @@ import { request } from 'express';
 import moment = require('moment');
 import { IsNull, Not } from 'typeorm';
 import { AppDataSource } from '../data-source';
-import { Account, Cart, CartDescription, Product } from '../entity';
+import { Account, Cart, CartDescription, Product, User } from '../entity';
 import { error, isEmptyObject, success } from '../util';
 
 class CartService {
@@ -225,6 +225,7 @@ class CartService {
   }
 
   async deleteSoft(req, res) {
+		const data = req.body;
     const cart = await AppDataSource.getRepository(Cart).findOne({
       where: {
         id: req.params.id,
@@ -232,11 +233,19 @@ class CartService {
       },
     });
 
+		const employee = await AppDataSource.getRepository(User).findOne({
+			where: {
+				id: data?.employeeId
+			}
+		});
+
     if (!cart)
       return error({
         res,
         message: 'Cart not found',
-      });
+    });
+
+		cart.approvalEmployee = employee;
 
     await AppDataSource.getRepository(Cart).save({
       ...cart,

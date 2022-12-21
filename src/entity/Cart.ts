@@ -37,7 +37,7 @@ export class Cart {
   deleteAt: string | null;
 
   // many to one
-  @ManyToOne(() => User, (user) => user.carts, { nullable: true })
+  @ManyToOne(() => User, (user) => user.cartsApproved, { nullable: true })
   approvalEmployee: User | null;
 
   // Cart Description

@@ -8,7 +8,7 @@ class ProductService {
   // get all
   async getAll(_, res) {
     const result = await AppDataSource.getRepository(Product).find({
-      where: { deleteAt: IsNull() },
+      where: { deleteAt: IsNull(), quantity: MoreThan(0) },
       relations: [
         'productType',
         'manufacturer',
@@ -48,6 +48,7 @@ class ProductService {
         manufacturer: {
           id: manufacturerId,
         },
+				quantity: MoreThan(0),
         deleteAt: IsNull(),
       },
       order: {
@@ -138,6 +139,7 @@ class ProductService {
         //		endTime: MoreThan((new Date()).toLocaleDateString())
         //	}
         //},
+				quantity: MoreThan(0),
         deleteAt: IsNull(),
       },
       order: {
@@ -187,6 +189,7 @@ class ProductService {
         //		endTime: MoreThan((new Date()).toLocaleDateString())
         //	}
         //},
+				quantity: MoreThan(0),
         deleteAt: IsNull(),
       },
       order: {
@@ -239,6 +242,7 @@ class ProductService {
         //		endTime: MoreThan((new Date()).toLocaleDateString())
         //	}
         //},
+				quantity: MoreThan(0),
         deleteAt: IsNull(),
       },
       order: {

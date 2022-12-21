@@ -26,9 +26,6 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   dob: Date | null;
 
-  //@Column({ type: 'bytea', nullable: true })
-  //avatar: Uint8Array | null;
-
 	@OneToOne(() => ImageUpload, (imageUpload) => imageUpload.user, {nullable: true})
 	@JoinColumn()
   avatar: ImageUpload | null;
@@ -47,4 +44,7 @@ export class User {
 
   @OneToMany(() => Cart, (cart) => cart.customer)
   carts: Cart[];
+
+	@OneToMany(() => Cart, (cart) => cart.approvalEmployee)
+  cartsApproved: Cart[];
 }
