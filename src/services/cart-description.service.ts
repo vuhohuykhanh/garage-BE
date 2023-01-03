@@ -89,6 +89,7 @@ class CartDescriptionService {
   //addCartDescription
   async addCartDescription(req, res) {
     const { idCartDes, productAdd, additionPrice } = req.body;
+		let newDate;
 
 		if(additionPrice) {
 			const productFee = await AppDataSource.getRepository(Product).findOne({
@@ -107,7 +108,7 @@ class CartDescriptionService {
           quantity: 1,
           price: additionPrice,
           type: 'Mua bán',
-          usageTime: (new Date()).toISOString(),
+          usageTime: null,
         }
       )
       .execute();
@@ -115,21 +116,22 @@ class CartDescriptionService {
 			await AppDataSource.getRepository(Cart).update(idCartDes, {
 				totalPrice: () => `totalPrice + ${Number(additionPrice)}`,
 			})
-
 		}
 
     await AppDataSource.createQueryBuilder()
       .insert()
       .into(CartDescription)
       .values(
-        productAdd?.map((item) => ({
+        productAdd?.map((item) => {
+					newDate = new Date();
+					return {
           cart: idCartDes,
           product: item,
           quantity: item.quantity,
           price: item.price,
           type: item?.type || '',
-          usageTime: item.usageTime || new Date(),
-        }))
+          usageTime: item.usageTime || new Date(newDate.setMonth(newDate.getMonth()+6)),
+        }})
       )
       .execute();
 
