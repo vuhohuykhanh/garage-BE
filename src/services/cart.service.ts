@@ -122,7 +122,7 @@ class CartService {
 
     const cartUpdate = await AppDataSource.getRepository(Cart).save({
       ...cart,
-      ...req.bod,
+      ...req.body,
     });
 
     return success({

@@ -19,11 +19,14 @@ export class Cart {
   })
   createTime: string;
 
-  @Column({ default: () => '0' })
+  @Column({name: "totalprice", default: () => '0' })
   totalPrice: number;
 
   @Column({ type: 'timestamp without time zone', nullable: true })
   timeToDone: string | null;
+
+	@Column({ type: 'timestamp without time zone', nullable: true })
+  returnDate: string | null;
 
   // many to one
   @ManyToOne(() => Status, (status) => status.carts)

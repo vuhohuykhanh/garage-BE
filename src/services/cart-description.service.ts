@@ -88,7 +88,35 @@ class CartDescriptionService {
 
   //addCartDescription
   async addCartDescription(req, res) {
-    const { idCartDes, productAdd } = req.body;
+    const { idCartDes, productAdd, additionPrice } = req.body;
+
+		if(additionPrice) {
+			const productFee = await AppDataSource.getRepository(Product).findOne({
+				where: {
+					id: 61
+				}
+			});
+			// add additional price (add phi dich vu kham benh)
+			await AppDataSource.createQueryBuilder()
+      .insert()
+      .into(CartDescription)
+      .values(
+        {
+          cart: idCartDes,
+          product: productFee,
+          quantity: 1,
+          price: additionPrice,
+          type: 'Mua bán',
+          usageTime: (new Date()).toISOString(),
+        }
+      )
+      .execute();
+
+			await AppDataSource.getRepository(Cart).update(idCartDes, {
+				totalPrice: () => `totalPrice + ${Number(additionPrice)}`,
+			})
+
+		}
 
     await AppDataSource.createQueryBuilder()
       .insert()
