@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../FE"
+		},
+		{
+			"path": "../../Admin"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {}
+}

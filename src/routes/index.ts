@@ -1,25 +1,27 @@
-import role from './Role.route'
-import cart from './cart.route'
-import sale from './sale.route'
-import comment from './comment.route'
-import user from './user.route'
-//import bill from './bill.route'
-import status from './status.route'
-import product from './product.route'
-import account from './account.route'
-import cartType from './cartType.route'
-import accessoryType from './accessoryType.route'
-import productType from './productType.route'
-import serviceType from './serviceType.route'
-import cartDescription from './cartDescription.route'
-import descriptionType from './descriptionType.route'
-import saleDescription from './saleDescription.route'
-import productDescription from './productDescription.route'
-import manufacturer from './manufacturer.route'
-import mail from './mail.route'
-import image from './imageUpload.route'
+import role from './Role.route';
+import cart from './Cart.route';
+import sale from './Sale.route';
+import comment from './Comment.route'
+import user from './User.route'
+//import bill from './Bill.route'
+import status from './Status.route'
+import product from './Product.route'
+import account from './Account.route'
+import cartType from './CartType.route'
+import accessoryType from './AccessoryType.route'
+import productType from './ProductType.route'
+import serviceType from './ServiceType.route'
+import cartDescription from './CartDescription.route'
+import descriptionType from './DescriptionType.route'
+import saleDescription from './SaleDescription.route'
+import productDescription from './ProductDescription.route'
+import manufacturer from './Manufacturer.route'
+import mail from './Mail.route'
+import image from './ImageUpload.route'
+import test from './Test.route';
 
 const router = (app) => {
+	app.use('/api/ping', test)
 	//app.use('/api/bill', bill);
 	app.use('/api/cart', cart);
 	app.use('/api/image', image);
